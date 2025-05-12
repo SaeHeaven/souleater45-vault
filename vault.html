@@ -37,15 +37,15 @@
         }
         .pdf-item {
             padding: 15px;
-            margin: 10px;
+            margin: 15px;
             background: #222;
             cursor: pointer;
             width: 80%;
-            max-width: 500px;
+            max-width: 600px;
             text-align: center;
             border-radius: 5px;
             transition: all 0.3s ease;
-            position: relative;
+            font-size: 1.1rem;
         }
         .pdf-item:hover {
             background: #333;
@@ -53,7 +53,7 @@
             box-shadow: 0 5px 15px rgba(255,255,255,0.1);
         }
         .pdf-item::before {
-            content: "📄";
+            content: "📚";
             margin-right: 10px;
         }
         h1 {
@@ -65,7 +65,10 @@
 <body>
     <div id="pdf-list">
         <h1>SELECT A DOCUMENT</h1>
-        <!-- PDF buttons will be added automatically here -->
+        <div class="pdf-item" onclick="openPdf('QCM-Semio.pdf')">QCM Sémiologie (Neuro/Uro/Néphro)</div>
+        <!-- Add more files like this:
+        <div class="pdf-item" onclick="openPdf('filename.pdf')">Display Name</div>
+        -->
     </div>
 
     <iframe id="pdf-viewer" style="display: none;"></iframe>
@@ -82,55 +85,12 @@
             }
         });
 
-        async function loadPDFs() {
-    // Manual PDF list as fallback
-    const manualPDFs = [
-        'anatomy-notes.pdf',
-        'biochemistry-qcm.pdf'
-        // Add ALL your PDF filenames here
-    ];
-
-    const pdfList = document.getElementById('pdf-list');
-    let foundPDFs = [];
-
-    // Try automatic detection first
-    try {
-        const response = await fetch('pdfs/');
-        if (response.ok) {
-            const html = await response.text();
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, 'text/html');
-            foundPDFs = Array.from(doc.querySelectorAll('a[href$=".pdf"]'))
-                .map(a => a.href.split('/').pop());
+        function openPdf(pdfFile) {
+            document.getElementById('pdf-list').style.display = 'none';
+            const viewer = document.getElementById('pdf-viewer');
+            viewer.style.display = 'block';
+            viewer.src = `pdfs/${pdfFile}#toolbar=0&navpanes=0`;
         }
-    } catch (error) {
-        console.log("Auto-scan failed, using manual list");
-    }
-
-    // Use manual list if auto-detection found nothing
-    const pdfsToShow = foundPDFs.length > 0 ? foundPDFs : manualPDFs;
-
-    if (pdfsToShow.length === 0) {
-        pdfList.innerHTML += `
-            <p style="color: #ff5555;">
-                Error: No PDFs configured.<br>
-                <small>Add files to the 'pdfs' folder or edit vault.html</small>
-            </p>
-        `;
-        return;
-    }
-
-    // Create buttons
-    pdfsToShow.forEach(pdf => {
-        const btn = document.createElement('div');
-        btn.className = 'pdf-item';
-        btn.textContent = pdf.replace('.pdf', '').replace(/[-_]/g, ' ');
-        btn.onclick = () => openPdf(pdf);
-        pdfList.appendChild(btn);
-    });
-}
-        // Load PDFs when page loads
-        window.addEventListener('DOMContentLoaded', loadPDFs);
     </script>
 </body>
 </html>
