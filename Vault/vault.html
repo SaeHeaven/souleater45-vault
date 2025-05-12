@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SECRET VAULT</title>
+    <style>
+        body {
+            background: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        #pdf-viewer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        #pdf-list {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+        .pdf-item {
+            padding: 15px;
+            margin: 10px;
+            background: #222;
+            cursor: pointer;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+            border-radius: 5px;
+        }
+        .pdf-item:hover {
+            background: #333;
+        }
+    </style>
+</head>
+<body>
+    <div id="pdf-list">
+        <h1>SELECT A DOCUMENT</h1>
+        <div class="pdf-item" onclick="openPdf('document1.pdf')">Document 1</div>
+        <div class="pdf-item" onclick="openPdf('document2.pdf')">Document 2</div>
+        <!-- Add more PDFs here -->
+    </div>
+
+    <iframe id="pdf-viewer" style="display: none;"></iframe>
+
+    <script>
+        // Block right-click
+        document.addEventListener('contextmenu', (e) => e.preventDefault());
+
+        // Block keyboard shortcuts (Ctrl+S, PrtScn, etc.)
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.key === 'PrintScreen' || e.key === 'F12') {
+                e.preventDefault();
+                alert('Saving/printing disabled.');
+            }
+        });
+
+        function openPdf(pdfFile) {
+            document.getElementById('pdf-list').style.display = 'none';
+            const viewer = document.getElementById('pdf-viewer');
+            viewer.style.display = 'block';
+            viewer.src = `pdfs/${pdfFile}#toolbar=0&navpanes=0`;
+        }
+    </script>
+</body>
+</html>
