@@ -82,70 +82,53 @@
             }
         });
 
-        // Automatically load PDFs from the pdfs folder
         async function loadPDFs() {
+    // Manual PDF list as fallback
+    const manualPDFs = [
+        'anatomy-notes.pdf',
+        'biochemistry-qcm.pdf'
+        // Add ALL your PDF filenames here
+    ];
+
     const pdfList = document.getElementById('pdf-list');
-    
+    let foundPDFs = [];
+
+    // Try automatic detection first
     try {
-        // Try to access the PDFs folder
         const response = await fetch('pdfs/');
-        
-        if (!response.ok) {
-            throw new Error(`Server returned ${response.status} status`);
+        if (response.ok) {
+            const html = await response.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            foundPDFs = Array.from(doc.querySelectorAll('a[href$=".pdf"]'))
+                .map(a => a.href.split('/').pop());
         }
-
-        const html = await response.text();
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
-        
-        // Get all PDF links
-        const pdfLinks = Array.from(doc.querySelectorAll('a'))
-            .map(link => link.href)
-            .filter(href => href.endsWith('.pdf'))
-            .map(href => href.split('/').pop());
-
-        if (pdfLinks.length === 0) {
-            // More helpful message
-            const errorMsg = document.createElement('p');
-            errorMsg.innerHTML = `
-                No PDFs found. Please ensure:<br>
-                1. A folder named <code>pdfs</code> exists<br>
-                2. It contains <code>.pdf</code> files
-            `;
-            pdfList.appendChild(errorMsg);
-            return;
-        }
-
-        // Create buttons for each PDF
-        pdfLinks.forEach(pdf => {
-            const btn = document.createElement('div');
-            btn.className = 'pdf-item';
-            btn.textContent = pdf
-                .replace('.pdf', '')
-                .replace(/_/g, ' ') // Replace underscores
-                .replace(/-/g, ' '); // Replace hyphens
-            btn.onclick = () => openPdf(pdf);
-            pdfList.appendChild(btn);
-        });
-
     } catch (error) {
-        console.error('PDF loading error:', error);
-        const errorMsg = document.createElement('p');
-        errorMsg.innerHTML = `
-            Configuration error detected:<br>
-            <small>${error.message}</small>
-        `;
-        pdfList.appendChild(errorMsg);
+        console.log("Auto-scan failed, using manual list");
     }
+
+    // Use manual list if auto-detection found nothing
+    const pdfsToShow = foundPDFs.length > 0 ? foundPDFs : manualPDFs;
+
+    if (pdfsToShow.length === 0) {
+        pdfList.innerHTML += `
+            <p style="color: #ff5555;">
+                Error: No PDFs configured.<br>
+                <small>Add files to the 'pdfs' folder or edit vault.html</small>
+            </p>
+        `;
+        return;
+    }
+
+    // Create buttons
+    pdfsToShow.forEach(pdf => {
+        const btn = document.createElement('div');
+        btn.className = 'pdf-item';
+        btn.textContent = pdf.replace('.pdf', '').replace(/[-_]/g, ' ');
+        btn.onclick = () => openPdf(pdf);
+        pdfList.appendChild(btn);
+    });
 }
-
-        function openPdf(pdfFile) {
-            document.getElementById('pdf-list').style.display = 'none';
-            const viewer = document.getElementById('pdf-viewer');
-            viewer.style.display = 'block';
-            viewer.src = `pdfs/${pdfFile}#toolbar=0&navpanes=0`;
-        }
-
         // Load PDFs when page loads
         window.addEventListener('DOMContentLoaded', loadPDFs);
     </script>
