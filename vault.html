@@ -44,18 +44,28 @@
             max-width: 500px;
             text-align: center;
             border-radius: 5px;
+            transition: all 0.3s ease;
+            position: relative;
         }
         .pdf-item:hover {
             background: #333;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255,255,255,0.1);
+        }
+        .pdf-item::before {
+            content: "📄";
+            margin-right: 10px;
+        }
+        h1 {
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
         }
     </style>
 </head>
 <body>
     <div id="pdf-list">
         <h1>SELECT A DOCUMENT</h1>
-        <div class="pdf-item" onclick="openPdf('document1.pdf')">Document 1</div>
-        <div class="pdf-item" onclick="openPdf('document2.pdf')">Document 2</div>
-        <!-- Add more PDFs here -->
+        <!-- PDF buttons will be added automatically here -->
     </div>
 
     <iframe id="pdf-viewer" style="display: none;"></iframe>
@@ -72,12 +82,47 @@
             }
         });
 
+        // Automatically load PDFs from the pdfs folder
+        async function loadPDFs() {
+            try {
+                const response = await fetch('pdfs/');
+                if (!response.ok) throw new Error("Couldn't access PDFs");
+                
+                const html = await response.text();
+                const doc = new DOMParser().parseFromString(html, 'text/html');
+                const links = Array.from(doc.querySelectorAll('a[href$=".pdf"]'))
+                    .map(a => a.href.split('/').pop());
+                
+                const pdfList = document.getElementById('pdf-list');
+                
+                if (links.length === 0) {
+                    pdfList.innerHTML += '<p>No documents found</p>';
+                    return;
+                }
+
+                links.forEach(pdf => {
+                    const btn = document.createElement('div');
+                    btn.className = 'pdf-item';
+                    btn.textContent = pdf.replace('.pdf', '');
+                    btn.onclick = () => openPdf(pdf);
+                    pdfList.appendChild(btn);
+                });
+            } catch (error) {
+                console.error("Error loading PDFs:", error);
+                document.getElementById('pdf-list').innerHTML += 
+                    '<p>Error loading documents. Please refresh.</p>';
+            }
+        }
+
         function openPdf(pdfFile) {
             document.getElementById('pdf-list').style.display = 'none';
             const viewer = document.getElementById('pdf-viewer');
             viewer.style.display = 'block';
             viewer.src = `pdfs/${pdfFile}#toolbar=0&navpanes=0`;
         }
+
+        // Load PDFs when page loads
+        window.addEventListener('DOMContentLoaded', loadPDFs);
     </script>
 </body>
 </html>
