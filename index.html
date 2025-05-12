@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SECRET VAULT</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .container {
+            text-align: center;
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-shadow: 0 0 10px #ff0000;
+        }
+        #password-input {
+            padding: 15px;
+            font-size: 1.2rem;
+            border: 2px solid #333;
+            background: #111;
+            color: #fff;
+            border-radius: 5px;
+            width: 250px;
+        }
+        #password-input:focus {
+            outline: none;
+            border-color: #555;
+        }
+        #denied-text {
+            color: #ff0000;
+            font-weight: bold;
+            opacity: 0;
+            margin-top: 1rem;
+            font-size: 1.5rem;
+            text-shadow: 0 0 5px #ff0000;
+        }
+        .shake {
+            animation: shake 0.5s;
+        }
+        .glow-red {
+            animation: glow-red 0.5s;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-10px); }
+            40%, 80% { transform: translateX(10px); }
+        }
+        @keyframes glow-red {
+            0%, 100% { border-color: #333; box-shadow: 0 0 0px #ff0000; }
+            50% { border-color: #ff0000; box-shadow: 0 0 20px #ff0000; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ENTER THE VAULT</h1>
+        <input type="password" id="password-input" placeholder="Password">
+        <div id="denied-text">ENTRY DENIED</div>
+    </div>
+
+    <script>
+        const passwordInput = document.getElementById('password-input');
+        const deniedText = document.getElementById('denied-text');
+
+        passwordInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                if (passwordInput.value === 'souleater45') {
+                    document.body.innerHTML = `
+                        <div style="
+                            position: fixed;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 100%;
+                            background: #000;
+                            color: #fff;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            flex-direction: column;
+                            font-family: 'Montserrat', sans-serif;
+                            z-index: 9999;
+                        ">
+                            <h1 style="font-size: 2rem; margin-bottom: 2rem; text-align: center;">
+                                Welcome, dear friend.<br>
+                                Enjoy your stay.<br>
+                                Sharing is forbidden, keep it exclusive ;)
+                            </h1>
+                            <p style="font-size: 1.2rem;">Loading vault...</p>
+                        </div>
+                    `;
+                    setTimeout(() => {
+                        window.location.href = 'vault.html';
+                    }, 3000);
+                } else {
+                    passwordInput.classList.add('shake', 'glow-red');
+                    deniedText.style.opacity = '1';
+                    setTimeout(() => {
+                        passwordInput.classList.remove('shake', 'glow-red');
+                        deniedText.style.opacity = '0';
+                    }, 1000);
+                    passwordInput.value = '';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
