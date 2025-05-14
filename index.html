@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SECRET VAULT</title>
-   <link href="https://fonts.googleapis.com/css2?family=Faustina:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
     <style>
         body {
-            background: #000;
+            background: #000000;
             color: #fff;
-            font-family: 'Faustina', sans-serif;
+            font-family: 'Pixelify Sans', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -19,57 +19,73 @@
             position: relative;
         }
         body::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    background: radial-gradient(
-        circle at center,
-        transparent 0%,
-        rgba(0, 0, 0, 0.7) 100%
-    );
-    z-index: -1;
-}
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: radial-gradient(
+                circle at center,
+                transparent 70%,
+                rgba(0, 0, 0, 1) 100%
+            );
+            z-index: -1;
+        }
         .subtitle {
-        color: white;
-        font-size: 1.2rem;
-        margin-top: -1rem; /* Brings it closer to the main heading */
-        margin-bottom: 2rem;
-        font-weight: 300;
-        letter-spacing: 0.5px;
-        text-shadow: 0 0 8px rgba(255,255,255,0.3);
-        opacity: 0.9;
-        animation: fadeIn 1s ease-out 1s forwards; /* Delayed start */
-        opacity: 0; /* Start invisible */
+            color: white;
+            font-size: 1.2rem;
+            margin-top: -1rem;
+            margin-bottom: 2rem;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+            text-shadow: 0 0 8px rgba(255,255,255,0.3);
+            opacity: 0.9;
+            animation: fadeIn 1s ease-out 1s forwards;
+            opacity: 0;
         }
         
+        /* Original GIF (password page background) */
         #gif-background {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1; /* Puts it behind content */
-            opacity: 0.15; /* Adjust transparency (0.1-0.3 recommended) */
+            z-index: -2;
+            opacity: 0.5;
             object-fit: cover;
         }
+        
+        /* New GIF (welcome screen only) */
+        #welcome-gif {
+            position: fixed;
+            top: -1;
+            left: 0;
+            width: 50%;
+            height: 50%;
+            z-index: -1;
+            opacity: 0.5;
+            object-fit: cover;
+            display: none;
+        }
+        
         .container {
             text-align: center;
         }
         h1 {
-            font-size: 2.5rem;
+            font-size: 7rem;
             margin-bottom: 2rem;
             animation: 
-            fadeIn 1.5s ease-out forwards,
-            pulseGlow 3s ease-in-out infinite;
-            opacity: 0; /* Start invisible for fade-in */
-            text-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+                fadeIn 1.5s ease-out forwards,
+                pulseGlow 3s ease-in-out infinite;
+            opacity: 0;
+            text-shadow: 0 0 10px rgba(136, 0, 125, 0.3);
         }
         #password-input {
             padding: 15px;
+            font-family: 'Pixelify Sans', sans-serif;
             font-size: 1.2rem;
             border: 2px solid #333;
             background: #111;
@@ -84,6 +100,7 @@
         #denied-text {
             color: #ff0000;
             font-weight: bold;
+            font-family: 'Pixelify Sans', sans-serif;
             opacity: 0;
             margin-top: 1rem;
             font-size: 1.5rem;
@@ -95,6 +112,23 @@
         .glow-red {
             animation: glow-red 0.5s;
         }
+        
+        /* Welcome screen styles */
+        .welcome-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            font-family: 'Pixelify Sans', sans-serif;
+            z-index: 9999;
+        }
+        
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
             20%, 60% { transform: translateX(-10px); }
@@ -105,18 +139,18 @@
             50% { border-color: #ff0000; box-shadow: 0 0 20px #ff0000; }
         }
         @keyframes fadeIn {
-         to { opacity: 1; }
+            to { opacity: 1; }
         }
         @keyframes pulseGlow {
-    0%, 100% { 
-      text-shadow: 0 0 10px rgba(0, 255, 128, 0.3),
-                   0 0 20px rgba(255, 0, 0, 0.1);
-    }
-    50% {
-      text-shadow: 0 0 15px rgba(0, 255, 0, 0.7),
-                   0 0 30px rgba(255, 0, 0, 0.3);
-    }
-  }
+            0%, 100% { 
+                text-shadow: 0 0 10px rgba(0, 255, 128, 0.3),
+                            0 0 20px rgba(255, 0, 0, 0.1);
+            }
+            50% {
+                text-shadow: 0 0 15px rgba(89, 0, 79, 0.7),
+                            0 0 30px rgba(41, 1, 40, 0.3);
+            }
+        }
     </style>
 </head>
 <body>
@@ -127,52 +161,73 @@
         <div id="denied-text">ENTRY DENIED</div>
     </div>
 
+    <!-- Original background GIF (always visible on password page) -->
+    <img id="gif-background" src="your-gif.gif" alt="background">
+    
+    <!-- New welcome screen GIF (hidden by default) -->
+    <img id="welcome-gif" src="your-gif2.gif" alt="welcome background">
+
     <script>
         const passwordInput = document.getElementById('password-input');
         const deniedText = document.getElementById('denied-text');
+        document.addEventListener('contextmenu', e => {
+         e.preventDefault();
+        alert('Inspection disabled');
+        return false;
+        });
+        console.log = function(){};
+        Object.defineProperty(window, 'console', {
+            get: () => ({log: () => {}})
+        });
+        
+        // Obfuscated password check
+        const _0xad3b=["\x73\x6F\x75\x6C","\x65\x61\x74\x65\x72","\x34\x35"];
+        let _0x7f2c=0;
+        passwordInput.addEventListener("input",function(e){
+            e.target.value.endsWith(_0xad3b[_0x7f2c])&&
+            (++_0x7f2c===_0xad3b.length&&
+            (sessionStorage.setItem("authed","1"),
+            showWelcomeScreen()));
+        });
 
+        
         passwordInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                if (passwordInput.value === 'souleater45') {
-                    document.body.innerHTML = `
-                        <div style="
-                            position: fixed;
-                            top: 0;
-                            left: 0;
-                            width: 100%;
-                            height: 100%;
-                            background: #000;
-                            color: #fff;
-                            display: flex;
-                            justify-content: center;
-                            align-items: center;
-                            flex-direction: column;
-                            font-family: 'Montserrat', sans-serif;
-                            z-index: 9999;
-                        ">
-                            <h1 style="font-size: 2rem; margin-bottom: 2rem; text-align: center;">
-                                Welcome, dear friend.<br>
-                                Enjoy your stay.<br>
-                                Sharing is forbidden, keep it exclusive ;)
-                            </h1>
-                            <p style="font-size: 1.2rem;">Loading vault...</p>
-                        </div>
-                    `;
-                    setTimeout(() => {
-                        window.location.href = 'vault.html';
-                    }, 3000);
-                } else {
-                    passwordInput.classList.add('shake', 'glow-red');
+    if (e.key === 'Enter') {
+        if (passwordInput.value === 'souleater45') {
+            document.body.innerHTML = `
+                <div class="welcome-screen">
+                    <h1 style="font-size: 2rem; margin-bottom: 2rem; text-align: center;">
+                        Welcome!<br>
+                        Sharing is forbidden, keep it exclusive ;)
+                    </h1>
+                    <p style="font-size: 1.2rem;">Loading vault...</p>
+                    <!-- Add this GIF at the bottom -->
+                    <img src="your-gif2.gif" style="
+                        position: fixed;
+                        bottom: 0px;
+                        left: 800px;
+                        height: auto;
+                        transform: translateX(-50%);
+                        width: 30%;
+                        opacity: 0.5;
+                        z-index: 9998;
+                    ">
+                </div>
+            `;
+            setTimeout(() => {
+                window.location.href = 'vault.html';
+            }, 3000);
+        } else {
+            passwordInput.classList.add('shake', 'glow-red');
                     deniedText.style.opacity = '1';
                     setTimeout(() => {
                         passwordInput.classList.remove('shake', 'glow-red');
                         deniedText.style.opacity = '0';
                     }, 1000);
-                    passwordInput.value = '';
-                }
-            }
-        });
+                    passwordInput.value = ''; 
+        }
+    }
+});
     </script>
-<img id="gif-background" src="your-gif.gif" alt="background">
 </body>
 </html>

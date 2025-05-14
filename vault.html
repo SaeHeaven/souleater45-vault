@@ -3,16 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SECRET VAULT</title>
+    <title>MEDICAL VAULT</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
             background: #000;
             color: #fff;
-            font-family: Arial, sans-serif;
+            font-family: 'Pixelify Sans', cursive;
             margin: 0;
-            padding: 0;
-            overflow: hidden;
+            padding: 20px;
+            overflow: auto;
+            image-rendering: pixelated;
         }
+        
+        h1 {
+            text-align: center;
+            margin: 20px 0 40px;
+            font-weight: 600;
+            font-size: 2.2rem;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(0,255,0,0.5);
+        }
+        
+        .subject-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .subject-card {
+            background: #111;
+            border-radius: 4px;
+            padding: 20px 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid #333;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .subject-card:hover {
+            background: #1a1a1a;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+            border-color: #444;
+        }
+        
+        .subject-title {
+            font-size: 1.3rem;
+            font-weight: 500;
+            margin-bottom: 15px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .icon {
+            font-family: monospace;
+            font-size: 1.5rem;
+            filter: drop-shadow(0 0 2px #00ff00);
+        }
+        
+        .pdf-item {
+            padding: 8px 12px;
+            margin: 6px 0;
+            border-radius: 3px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid #444;
+        }
+        
+        .pdf-item.available {
+            background: #113311;
+            color: #00ff00;
+            border: 1px solid #00aa00;
+        }
+        
+        .pdf-item.available:hover {
+            background: #115511;
+            text-shadow: 0 0 5px #00ff00;
+            box-shadow: 0 0 8px #00ff00;
+        }
+        
+        .pdf-item.unavailable {
+            background: #2a1a1a;
+            color: #666;
+            cursor: not-allowed;
+            position: relative;
+            border: 1px dashed #ff0000;
+        }
+        
+        .pdf-item.unavailable:hover {
+            background: #3a1a1a;
+            color: #ff3333;
+        }
+        
+        .pdf-item.unavailable::after {
+            content: "[X]";
+            position: absolute;
+            right: 8px;
+            color: #ff0000;
+            font-family: 'Pixelify Sans', cursive;
+        }
+        
         #pdf-viewer {
             position: fixed;
             top: 0;
@@ -20,77 +120,155 @@
             width: 100%;
             height: 100%;
             border: none;
-        }
-        #pdf-list {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
             background: #000;
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
             z-index: 100;
+            display: none;
         }
-        .pdf-item {
-            padding: 15px;
-            margin: 15px;
-            background: #222;
-            cursor: pointer;
-            width: 80%;
-            max-width: 600px;
-            text-align: center;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-            font-size: 1.1rem;
-        }
-        .pdf-item:hover {
+        
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
             background: #333;
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(255,255,255,0.1);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 3px;
+            cursor: pointer;
+            z-index: 101;
+            display: none;
+            font-family: 'Pixelify Sans', cursive;
+            border: 1px solid #555;
         }
-        .pdf-item::before {
-            content: "📚";
-            margin-right: 10px;
-        }
-        h1 {
-            margin-bottom: 30px;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        
+        .back-btn:hover {
+            background: #444;
+            text-shadow: 0 0 5px #00ff00;
         }
     </style>
 </head>
 <body>
-    <div id="pdf-list">
-        <h1>SELECT A DOCUMENT</h1>
-        <div class="pdf-item" onclick="openPdf('QCM-Semio.pdf')">QCM Sémiologie (Neuro/Uro/Néphro)</div>
-        <!-- Add more files like this:
-        <div class="pdf-item" onclick="openPdf('filename.pdf')">Display Name</div>
-        -->
+    <h1>MEDICAL VAULT</h1>
+    
+    <div class="subject-grid">
+        <!-- Subject 1 - Sémiologie (Now with available QCM) -->
+        <div class="subject-card">
+            <div class="subject-title"><span class="icon">[🧠]</span> Sémiologie</div>
+            <div class="pdf-item available" onclick="openPdf('semiologie-qcm.pdf')">QCM</div>
+            <div class="pdf-item unavailable">Résumé</div>
+        </div>
+        
+        <!-- Other subjects remain unchanged -->
+        <div class="subject-card">
+            <div class="subject-title"><span class="icon">[🩸]</span> Hématologie</div>
+            <div class="pdf-item unavailable">QCM</div>
+            <div class="pdf-item unavailable">Résumé</div>
+        </div>
+        
+        <div class="subject-card">
+            <div class="subject-title"><span class="icon">[💊]</span> Pharmacologie</div>
+            <div class="pdf-item unavailable">QCM</div>
+            <div class="pdf-item unavailable">Résumé</div>
+        </div>
+        
+        <div class="subject-card">
+            <div class="subject-title"><span class="icon">[☠️]</span> Toxicologie</div>
+            <div class="pdf-item unavailable">QCM</div>
+            <div class="pdf-item unavailable">Résumé</div>
+        </div>
+        
+        <div class="subject-card">
+            <div class="subject-title"><span class="icon">[🛡️]</span> Immunologie</div>
+            <div class="pdf-item unavailable">QCM</div>
+            <div class="pdf-item unavailable">Résumé</div>
+        </div>
+        
+        <div class="subject-card">
+            <div class="subject-title"><span class="icon">[🦠]</span> Parasitologie</div>
+            <div class="pdf-item unavailable">QCM</div>
+            <div class="pdf-item unavailable">Résumé</div>
+        </div>
+        
+        <div class="subject-card">
+            <div class="subject-title"><span class="icon">[🤧]</span> Maladies Infectieuses</div>
+            <div class="pdf-item unavailable">QCM</div>
+            <div class="pdf-item unavailable">Résumé</div>
+        </div>
+        
+        <div class="subject-card">
+            <div class="subject-title"><span class="icon">[📷]</span> Radiologie</div>
+            <div class="pdf-item unavailable">QCM</div>
+            <div class="pdf-item unavailable">Résumé</div>
+        </div>
+        
+        <div class="subject-card">
+            <div class="subject-title"><span class="icon">[🔬]</span> Anatomie Pathologique</div>
+            <div class="pdf-item unavailable">QCM</div>
+            <div class="pdf-item unavailable">Résumé</div>
+        </div>
     </div>
-
-    <iframe id="pdf-viewer" style="display: none;"></iframe>
-
+    
+    <iframe id="pdf-viewer"></iframe>
+    <button class="back-btn" onclick="closePdf()">← RETOUR</button>
+    
     <script>
         // Block right-click
-        document.addEventListener('contextmenu', (e) => e.preventDefault());
-
-        // Block keyboard shortcuts (Ctrl+S, PrtScn, etc.)
+        document.addEventListener('contextmenu', e => {
+         e.preventDefault();
+        alert('Inspection disabled');
+        return false;
+        });
+        console.log = function(){};
+        Object.defineProperty(window, 'console', {
+            get: () => ({log: () => {}})
+        });
+        
+        // Block keyboard shortcuts
         document.addEventListener('keydown', (e) => {
             if (e.ctrlKey || e.key === 'PrintScreen' || e.key === 'F12') {
                 e.preventDefault();
-                alert('Saving/printing disabled.');
+                alert('ACCÈS REFUSÉ');
             }
         });
-
+        
         function openPdf(pdfFile) {
-            document.getElementById('pdf-list').style.display = 'none';
-            const viewer = document.getElementById('pdf-viewer');
-            viewer.style.display = 'block';
-            viewer.src = `pdfs/${pdfFile}#toolbar=0&navpanes=0`;
+            const btn = event.target;
+            if (btn.classList.contains('unavailable')) {
+                return;
+            }
+            document.querySelector('.subject-grid').style.display = 'none';
+            document.querySelector('h1').style.display = 'none';
+            document.getElementById('pdf-viewer').style.display = 'block';
+            document.querySelector('.back-btn').style.display = 'block';
+            document.getElementById('pdf-viewer').src = `pdfs/${pdfFile}#toolbar=0&navpanes=0`;
         }
+        
+        function closePdf() {
+            document.querySelector('.subject-grid').style.display = 'grid';
+            document.querySelector('h1').style.display = 'block';
+            document.getElementById('pdf-viewer').style.display = 'none';
+            document.querySelector('.back-btn').style.display = 'none';
+            document.getElementById('pdf-viewer').src = '';
+        }
+        const checkAuth = () => {
+            const authRoutes = ['index.html', 'netlify.com'];
+            const validReferrer = authRoutes.some(route => 
+                document.referrer.includes(route));
+            
+            if (!validReferrer && !sessionStorage.getItem('authed')) {
+                window.location.replace('index.html');
+                return false;
+            }
+            return true;
+            };
+
+            // Self-destruct if tampered with
+            setInterval(() => {
+                if (!checkAuth()) {
+                    document.body.innerHTML = '<h1>ACCESS VIOLATION</h1>';
+                    sessionStorage.clear();
+                }
+            }, 5000);
     </script>
 </body>
 </html>
